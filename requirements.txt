@@ -1,0 +1,17 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+openai==1.93.3
+google-genai==1.47.0
+loguru==0.7.2
+python-dotenv==1.0.1
+requests>=2.31.0
+json-repair>=0.14.0
+Pillow>=10.4.0
+opencv-python-headless
+dotenv
+langchain-core
+langchain==0.3.26
+langchain-openai==0.3.27
+langgraph
+langchain-google-genai==2.1.7
