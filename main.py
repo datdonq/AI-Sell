@@ -3,6 +3,7 @@ from call_llm import LLMContentGenerator
 from dotenv import load_dotenv
 from prompt import SCRIPT_PROMPT
 from agent import livestream_agent
+from comment import get_next_comment
 load_dotenv()
 
 def generate_script(product_info: str, persona: str) -> Dict:
@@ -37,4 +38,11 @@ if __name__ == "__main__":
     persona = "Nhân vật livestream là một người đàn ông trung niên, cao 170cm, nặng 70kg, mặt trắng, tóc đen, mắt đen, mũi đen, môi đen"
     script = generate_script(product_info, persona)
     for action in script:
+        # Thực hiện action trong kịch bản
         print(livestream_agent.invoke({"messages": [{"role": "user", "content": action["action"]}]}))
+        # Sau khi action kết thúc, xử lý toàn bộ comment đang chờ (nếu có)
+        while True:
+            comment_text = get_next_comment()
+            if not comment_text:
+                break
+            print(livestream_agent.invoke({"messages": [{"role": "user", "content": comment_text}]}))
