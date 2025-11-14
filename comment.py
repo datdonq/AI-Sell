@@ -3,6 +3,7 @@ import os
 import time
 from datetime import datetime
 from typing import List, Optional
+import argparse
 
 # Simple file-based queue for simulating user comments
 _ROOT_DIR = os.path.dirname(__file__)
@@ -76,15 +77,42 @@ def get_next_comment() -> Optional[str]:
         return None
 
 
+def _interactive_input() -> None:
+    """
+    Chế độ nhập tay: gõ comment và nhấn Enter để đẩy vào hàng đợi.
+    Gõ /q hoặc /quit để thoát.
+    """
+    _ensure_files()
+    print("Chế độ nhập comment (interactive). Gõ '/q' để thoát.")
+    try:
+        while True:
+            text = input("Nhập comment: ").strip()
+            if text in ("/q", "/quit", "/exit"):
+                print("Thoát chế độ nhập comment.")
+                break
+            if not text:
+                continue
+            enqueue_comment(text)
+            print("Đã thêm vào hàng đợi.")
+    except KeyboardInterrupt:
+        print("\nThoát chế độ nhập comment.")
+
+
 if __name__ == "__main__":
-    # Demo: hard-code một danh sách comment và đẩy lần lượt vào hàng đợi
-    demo_comments = [
-        "Zoom cận mặt giúp tôi xem rõ hơn",
-        "Hãy vẫy tay chào khán giả mới vào",
-        "Cúi mình cảm ơn",
-        "Nhảy một điệu vui nhộn",
-    ]
-    # Đẩy mỗi comment cách nhau 2 giây để mô phỏng
-    enqueue_comments(demo_comments, delay_seconds=2.0)
-    print("Đã đẩy demo comments vào hàng đợi.")
+    parser = argparse.ArgumentParser(description="Hàng đợi comment cho agent livestream")
+    parser.add_argument("--demo", action="store_true", help="Chạy demo đẩy comment mẫu")
+    parser.add_argument("--delay", type=float, default=2.0, help="Độ trễ giữa các comment demo (giây)")
+    args = parser.parse_args()
+
+    if args.demo:
+        demo_comments = [
+            "Zoom cận mặt giúp tôi xem rõ hơn",
+            "Hãy vẫy tay chào khán giả mới vào",
+            "Cúi mình cảm ơn",
+            "Nhảy một điệu vui nhộn",
+        ]
+        enqueue_comments(demo_comments, delay_seconds=args.delay)
+        print("Đã đẩy demo comments vào hàng đợi.")
+    else:
+        _interactive_input()
 
